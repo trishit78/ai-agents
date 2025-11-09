@@ -6,6 +6,13 @@ import axios from 'axios';
 import {init} from './email.js'
 dotenv.config();
 
+const weatherResponse = z.object({
+    place:z.string(),
+    weather:z.string(),
+    temperature:z.string()
+})
+
+
 const getWeather = tool({
     name:'get_weather',
     description:'Return the weather of a city',
@@ -36,12 +43,13 @@ const sendEmailTool = tool({
 const agent = new Agent({
     name:'Weather forecast agent',
     instructions:'You are an agent that will return the weather of a city',
-    tools:[getWeather,sendEmailTool]
+    tools:[getWeather,sendEmailTool],
+    outputType:weatherResponse
 });
 
 async function new_init(data) {
     const output = await run(agent,data);
-    console.log(output.finalOutput)
+    console.log(output.finalOutput.weather)
 }
 
-new_init('What is the weather of kolkata? send it in a email to trishit456@gmail.com')
+new_init('What is the weather of kolkata,london,NYC? send it in a email to trishit456@gmail.com')
